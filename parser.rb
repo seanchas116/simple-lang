@@ -27,8 +27,8 @@ class Parser < Parslet::Parser
   rule(:factor) { unaryop.maybe.as(:unaryop) >> value.as(:value) }
 
   rule(:expression) { factor.as(:factor) >> (binaryop.as(:binaryop) >> factor.as(:factor)).repeat(0) }
-  rule(:program) { (expression.as(:expression).maybe >> linebreak).repeat(0) }
+  rule(:procedure) { (expression.as(:expression).maybe >> linebreak).repeat(0) >> expression.as(:expression).maybe }
 
-  root :program
+  root :procedure
 
 end
