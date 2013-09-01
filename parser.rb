@@ -33,20 +33,7 @@ class Parser < Parslet::Parser
   rule(:parenexpression) { lparen >> expression.as(:expression) >> rparen }
   rule(:value) { funcall.as(:funcall) | number.as(:number) | identifier.as(:identifier) | parenexpression }
 
-
   rule(:unary_subexpr) { unaryop.maybe.as(:unaryop) >> value.as(:value) }
-=begin
-  rule(:pow_subexpr) { value.as(:left) >> pow_op >> unary_subexpr | unary_subexpr }
-  rule(:mul_subexpr) { value >> mul_op >> pow_subexpr | pow_subexpr }
-  rule(:add_subexpr) { value >> add_op >> mul_subexpr | mul_subexpr }
-  rule(:assign_subexpr) { value >> assign_op >> add_subexpr | add_subexpr }
-  rule(:comp_subexpr) { value >> comp_op >> assign_subexpr | assign_subexpr }
-  rule(:logical_subexpr) { value >> logical_op >> comp_subexpr | comp_subexpr }
-
-  rule(:expression) { logical_subexpr }
-=end
-
-  #rule(:expression) { factor.as(:factor) >> (binaryop.as(:binaryop) >> factor.as(:factor)).repeat(0) }
 
   rule(:sub_expr_0) { unary_subexpr }
 
