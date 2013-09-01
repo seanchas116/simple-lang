@@ -1,6 +1,13 @@
 require 'parslet'
 
+BINARY_OPERATORS = %w(+ - / * ^ = == != < <= > >=)
+UNARY_OPERATORS = %w(+ -)
+
 class Parser < Parslet::Parser
+
+  def any_str(strings)
+    strings.map {|x| str(x)}.inject {|result, x| result | x}
+  end
 
   rule(:space) { match['[:blank:]'].repeat(1) }
   rule(:space?) { space.maybe }
@@ -9,8 +16,8 @@ class Parser < Parslet::Parser
   rule(:lparen) { str('(') >> space? }
   rule(:rparen) { str(')') >> space? }
   rule(:comma) { str(',') >> space? }
-  rule(:binaryop) { match['+-/*%^='] >> space? }
-  rule(:unaryop) { match['+-'] >> space? }
+  rule(:binaryop) { any_str(BINARY_OPERATORS) >> space? }
+  rule(:unaryop) { any_str(UNARY_OPERATORS) >> space? }
 
   rule(:funcall) { identifier.as(:identifier) >> lparen >> (expression.as(:expression) >> (comma >> expression.as(:expression)).repeat(0)).maybe >> rparen }
   rule(:number) { ( match['0-9'].repeat(1) >> ( str('.') >> match['0-9'].repeat(1) ).maybe ) >> space? }

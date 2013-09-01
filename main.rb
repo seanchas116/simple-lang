@@ -1,5 +1,6 @@
 require 'pp'
 require './parser.rb'
+require './ast.rb'
 
 def parse(str)
   parsed = Parser.new.parse(str)
@@ -14,7 +15,7 @@ b = 3
 x0 = 5
 x_1 = -6
 
-c = 4
+c = f(x, y)
 
 EOS
 
