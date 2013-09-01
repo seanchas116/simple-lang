@@ -24,9 +24,9 @@ class Transform < Parslet::Transform
 
   rule(:identifier => simple(:identifier), :parameters => simple(:parameterItem)) do
     if ExpressionsItem === parameterItem
-      FunCall.new(identifier, parameterItem.expressions)
+      FunCall.new(identifier.to_s.strip, parameterItem.expressions)
     else
-      FunCall.new(identifier, [parameterItem])
+      FunCall.new(identifier.to_s.strip, [parameterItem])
     end
   end
 

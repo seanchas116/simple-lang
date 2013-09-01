@@ -38,13 +38,13 @@ class Parser < Parslet::Parser
   rule(:sub_expr_0) { unary_subexpr }
 
   BINARY_OPERATORS_WITH_PRECEDENCE.each_with_index do |operators, index|
-    rule("sub_expr_#{index+1}".to_sym) do
-      prev = method("sub_expr_#{index}".to_sym).call
+    rule("sub_expr_#{index+1}") do
+      prev = method("sub_expr_#{index}").call
       prev.as(:left) >> ((any_str(operators) >> space?).as(:op) >> prev.as(:right)).repeat(1) | prev
     end
   end
 
-  rule(:expression) { method("sub_expr_#{BINARY_OPERATORS_WITH_PRECEDENCE.length}".to_sym).call }
+  rule(:expression) { method("sub_expr_#{BINARY_OPERATORS_WITH_PRECEDENCE.length}").call }
 
   rule(:procedure) { ((expression.as(:expression).maybe >> linebreak).repeat(0) >> expression.as(:expression).maybe).as(:procedure) }
 

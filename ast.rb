@@ -1,6 +1,8 @@
 
 class Procedure
 
+  attr_accessor :expressions, :context
+
   def initialize(expressions)
     @expressions = expressions
     @context = Hash[]
@@ -23,7 +25,7 @@ class Variable < Struct.new(:name)
   end
 
   def eval(context)
-    if context.include?(name)
+    if context.has_key?(name)
       context[name]
     else
       puts "variable not found: #{name}"
@@ -45,11 +47,11 @@ class FunCall < Struct.new(:fun, :parameters)
 
   def eval(context)
     if context.has_key?(fun)
+      values = parameters.map { |e| e.eval(context) }
+      context[fun].call(*values)
+    else
       puts "function not found: #{fun}"
       nil
-    else
-      values = parameters.map { |e| e.eval }
-      context[fun].call(*values)
     end
   end
 
