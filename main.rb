@@ -8,4 +8,4 @@ rescue Parslet::ParseFailed => failure
   puts failure.cause.ascii_tree
 end
 
-parse("1 + a(1) + 2 + (s + t)")
+parse("1 + a(1) + 2 + (s + -t)")
