@@ -8,7 +8,7 @@ class Procedure
 
   def eval()
     @expressions.each do |exp|
-      exp.eval(context)
+      p exp.eval(@context)
     end
   end
 
@@ -60,9 +60,9 @@ class UnaryOperation < Struct.new(:op, :right)
   def eval(context)
     case op
     when '+'
-      right.eval
+      right.eval(context)
     when '-'
-      -right.eval
+      -right.eval(context)
     end
   end
 
@@ -70,7 +70,7 @@ end
 
 class BinaryOperation < Struct.new(:left, :op, :right)
 
-  def eval
+  def eval(context)
     case op
     when '='
       left.set(context, right.eval(context)).eval(context)

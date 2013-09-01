@@ -47,7 +47,7 @@ class Transform < Parslet::Transform
   rule(:expression => simple(:x)) { x }
 
   rule(:procedure => simple(:item)) do
-    if ExpressionsItem == item
+    if ExpressionsItem === item
       Procedure.new(item.expressions)
     else
       Procedure.new([item])

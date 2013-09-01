@@ -8,18 +8,17 @@ def parse(str)
   pp parsed
   transformed = Transform.new.apply(parsed)
   pp transformed
+  transformed.eval
 
 rescue Parslet::ParseFailed => failure
   puts failure.cause.ascii_tree
 end
 
 str = <<EOS
-a = 2 * 3
+a = 1 - 2 * 3
 b = 3
 x0 = 5
 x_1 = -6
-
-c = f(x, y)
 EOS
 
 str2 = "
@@ -29,9 +28,4 @@ a == 2
 3 + (3 + 2) * f(2, 3) + f(1)
 "
 
-print str
-
-parse("a > 1")
-parse("b * 2")
-parse("a * b - c")
-parse str2
+parse str
