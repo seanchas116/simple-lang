@@ -67,6 +67,24 @@ f(1, 2)
 
 EOS
 
+str_func_rec = <<EOS
+
+y = 10
+
+sum = (x, memo) =>
+  case x
+  when 0
+    memo
+  else
+    sum(x-1, memo + x)
+  end
+end
+
+sum(5, 0)
+
+EOS
+
 eval(parse(str))
 eval(parse(str_control))
 eval parse(str_func)
+eval parse(str_func_rec)

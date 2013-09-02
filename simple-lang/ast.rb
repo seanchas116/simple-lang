@@ -27,6 +27,11 @@ module SimpleLang
 
     def set(context, value)
       context[name] = value
+      if Function === value
+        puts "name: #{name}"
+        puts "value is a Function"
+        value.context[name] = value
+      end
       self
     end
 
@@ -83,6 +88,10 @@ module SimpleLang
     def eval(context)
       case op
       when '='
+        unless Variable === left
+          puts "only variables you can assign a value to".
+          return nil
+        end
         left.set(context, right.eval(context)).eval(context)
       when '=='
         left.eval(context) == right.eval(context)
@@ -137,6 +146,8 @@ module SimpleLang
 
   class Function
 
+    attr_reader :context
+
     def initialize(parameters, procedure, context)
       @parameters = parameters
       @procedure = procedure
@@ -150,11 +161,14 @@ module SimpleLang
         return nil
       end
 
-      context = Hash.new(@context)
+      context = @context.clone
 
       @parameters.each_with_index do |item, index|
         context[item] = parameters[index]
       end
+
+      puts "Function context:"
+      pp context
 
       @procedure.eval(context)
 
@@ -165,7 +179,7 @@ module SimpleLang
   class FunctionLiteral < Struct.new(:parameters, :procedure)
 
     def eval(context)
-      Function.new(parameters, procedure, context)
+      Function.new(parameters, procedure, context.clone)
     end
 
   end
