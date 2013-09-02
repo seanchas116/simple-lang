@@ -5,6 +5,8 @@ require 'simple-lang/parser'
 require 'simple-lang/ast'
 require 'simple-lang/transform'
 
+include SimpleLang
+
 def parse(str)
   parsed = Parser.new.parse(str)
   pp parsed
