@@ -1,6 +1,6 @@
 require 'parslet'
 
-UNARY_OPERATORS = %w(+ -)
+UNARY_OPERATORS = %w(! + -)
 
 BINARY_OPERATORS_WITH_PRECEDENCE = [
   %w(^),
@@ -41,20 +41,20 @@ class Parser < Parslet::Parser
   end
 
   rule(:paren_expression) { lparen >> expression >> rparen }
-  
+
   rule(:value) { (funcall | number | identifier | paren_expression).as(:value) }
 
   rule(:unary_expression) { (unaryop.maybe >> value).as(:unary_expression) }
-  rule(:sub_expr_0) { unary_expression }
+  rule(:binary_subexpr_0) { unary_expression }
 
   BINARY_OPERATORS_WITH_PRECEDENCE.each_with_index do |operators, index|
-    rule("sub_expr_#{index+1}") do
-      prev = method("sub_expr_#{index}").call
+    rule("binary_subexpr_#{index+1}") do
+      prev = method("binary_subexpr_#{index}").call
       (prev.as(:left) >> (any_str(operators).as(:op) >> space? >> prev.as(:right)).repeat(1)).as(:binary_expression) | prev
     end
   end
 
-  rule(:expression) { method("sub_expr_#{BINARY_OPERATORS_WITH_PRECEDENCE.length}").call }
+  rule(:expression) { method("binary_subexpr_#{BINARY_OPERATORS_WITH_PRECEDENCE.length}").call }
 
   rule(:procedure) { ((expression.maybe >> linebreak).repeat(0) >> expression.maybe).as(:procedure) }
 

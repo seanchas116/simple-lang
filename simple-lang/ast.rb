@@ -65,6 +65,8 @@ class UnaryOperation < Struct.new(:op, :right)
       right.eval(context)
     when '-'
       -right.eval(context)
+    when '!'
+      !right.eval(context)
     end
   end
 

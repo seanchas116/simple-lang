@@ -1,7 +1,9 @@
+$:.unshift File.dirname(__FILE__)
+
 require 'pp'
-require './parser.rb'
-require './ast.rb'
-require './transform.rb'
+require 'simple-lang/parser'
+require 'simple-lang/ast'
+require 'simple-lang/transform'
 
 def parse(str)
   parsed = Parser.new.parse(str)
@@ -28,7 +30,7 @@ end
 
 str = <<EOS
 a = 1 - 2 * 3
-b = a * (1.5 + 6.2)
+b = a * (1.5+6.2)
 c = floor(b)
 x0 = 5
 x_1 = -6 + x0

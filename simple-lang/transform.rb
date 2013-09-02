@@ -1,5 +1,5 @@
 require 'parslet'
-require './ast.rb'
+require 'simple-lang/ast'
 
 class Transform < Parslet::Transform
 
