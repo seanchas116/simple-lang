@@ -57,10 +57,27 @@ print(sum(10, 0))
 
 EOS
 
+str_closure = <<EOS
+
+get_counter = () =>
+  count = 0
+  () =>
+    count = count + 1
+  end
+end
+
+counter = get_counter()
+
+print(counter())
+print(counter())
+
+EOS
+
 engine = SimpleLang::Engine.new
 
 engine.exec str
 engine.exec str_control
 engine.exec str_func
 engine.exec str_func_rec
+engine.exec str_closure, print_parsetree: true, print_ast: true
 

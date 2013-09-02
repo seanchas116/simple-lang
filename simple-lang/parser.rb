@@ -38,7 +38,7 @@ module SimpleLang
     # values
     
     rule(:function_call_parameters) do
-      (lparen >> expression.repeat(1,1) >> (comma >> expression).repeat(0) >> rparen ).as(:function_call_parameters)
+      lparen >> (expression.repeat(1,1) >> (comma >> expression).repeat(0)).repeat(0,1).as(:function_call_parameters) >> rparen
     end
 
     rule(:function_call) { (identifier >> function_call_parameters).as(:function_call) }
@@ -92,7 +92,7 @@ module SimpleLang
     # function literals
 
     rule(:function_literal_parameters) do
-      (lparen >> identifier.repeat(1,1) >> (comma >> identifier).repeat(0) >> rparen ).as(:function_literal_parameters)
+      lparen >> (identifier.repeat(1,1) >> (comma >> identifier).repeat(0)).repeat(0,1).as(:function_literal_parameters) >> rparen
     end
 
     rule(:function_literal) do
