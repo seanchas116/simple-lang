@@ -1,23 +1,15 @@
+require 'simple-lang/error'
 
 module SimpleLang
 
   class Procedure < Struct.new(:expressions)
 
     def eval(context)
-
       result = nil
-
-      puts "evaluating a Procedure"
-
       expressions.each do |exp|
         result = exp.eval(context)
-        p result
       end
-
-      puts "evaluating ends"
-
       result
-
     end
 
   end
@@ -28,8 +20,6 @@ module SimpleLang
     def set(context, value)
       context[name] = value
       if Function === value
-        puts "name: #{name}"
-        puts "value is a Function"
         value.context[name] = value
       end
       self
@@ -39,7 +29,7 @@ module SimpleLang
       if context.has_key?(name)
         context[name]
       else
-        puts "variable not found: #{name}"
+        raise ExecError.new("variable not found: #{name}")
         nil
       end
     end
@@ -61,8 +51,7 @@ module SimpleLang
         values = parameters.map { |e| e.eval(context) }
         context[function].call(*values)
       else
-        puts "function not found: #{function}"
-        nil
+        raise ExecError.new("function not found: #{function}")
       end
     end
 
@@ -89,8 +78,7 @@ module SimpleLang
       case op
       when '='
         unless Variable === left
-          puts "only variables you can assign a value to".
-          return nil
+          raise ExecError.new("only variables you can assign a value to")
         end
         left.set(context, right.eval(context)).eval(context)
       when '=='
@@ -166,9 +154,6 @@ module SimpleLang
       @parameters.each_with_index do |item, index|
         context[item] = parameters[index]
       end
-
-      puts "Function context:"
-      pp context
 
       @procedure.eval(context)
 
