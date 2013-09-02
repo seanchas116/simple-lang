@@ -49,14 +49,14 @@ module SimpleLang
 
   end
 
-  class FunCall < Struct.new(:fun, :parameters)
+  class FunctionCall < Struct.new(:function, :parameters)
 
     def eval(context)
-      if context.has_key?(fun)
+      if context.has_key?(function)
         values = parameters.map { |e| e.eval(context) }
-        context[fun].call(*values)
+        context[function].call(*values)
       else
-        puts "function not found: #{fun}"
+        puts "function not found: #{function}"
         nil
       end
     end
@@ -131,6 +131,41 @@ module SimpleLang
 
       return nil
 
+    end
+
+  end
+
+  class Function
+
+    def initialize(parameters, procedure, context)
+      @parameters = parameters
+      @procedure = procedure
+      @context = context
+    end
+
+    def call(*parameters)
+
+      if parameters.length != @parameters.length
+        puts "wrong parameter count"
+        return nil
+      end
+
+      context = Hash.new(@context)
+
+      @parameters.each_with_index do |item, index|
+        context[item] = parameters[index]
+      end
+
+      @procedure.eval(context)
+
+    end
+
+  end
+
+  class FunctionLiteral < Struct.new(:parameters, :procedure)
+
+    def eval(context)
+      Function.new(parameters, procedure, context)
     end
 
   end

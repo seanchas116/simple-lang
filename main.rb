@@ -56,5 +56,17 @@ else
 end
 EOS
 
+str_func = <<EOS
+
+f = (a, b) =>
+  a = a + 2
+  a + b
+end
+
+f(1, 2)
+
+EOS
+
 eval(parse(str))
 eval(parse(str_control))
+eval parse(str_func)

@@ -10,8 +10,8 @@ module SimpleLang
     rule(:number => simple(:x)) { NumberLiteral.new(x.to_f) }
     rule(:identifier => simple(:name)) { Variable.new(name.to_s) }
 
-    rule(:funcall => { :identifier => simple(:identifier), :parameters => sequence(:parameters) }) do
-      FunCall.new(identifier.to_s, parameters)
+    rule(:function_call => { :identifier => simple(:identifier), :function_call_parameters => sequence(:parameters) }) do
+      FunctionCall.new(identifier.to_s, parameters)
     end
 
     rule(:value => simple(:item)) { item }
@@ -65,10 +65,13 @@ module SimpleLang
     rule(:case_when_expression => {
         :case_statement => {:parameter => simple(:case_parameter)},
         :whens => sequence(:when_statements),
-        :elses => sequence(:else_statements),
-        :end_statement => simple(:end_statement)
+        :elses => sequence(:else_statements)
       }) do
       CaseWhenExpression.new(case_parameter, when_statements, else_statements[0])
+    end
+    
+    rule(:function_literal => { :function_literal_parameters => sequence(:params), :content => simple(:procedure) }) do
+      FunctionLiteral.new(params.map {|item| item.name}, procedure)
     end
 
   end

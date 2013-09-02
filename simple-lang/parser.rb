@@ -37,11 +37,11 @@ module SimpleLang
     
     # values
     
-    rule(:parameters) do
-      lparen >> ( expression.repeat(1,1) >> (comma >> expression).repeat(0) >> rparen ).as(:parameters)
+    rule(:function_call_parameters) do
+      (lparen >> expression.repeat(1,1) >> (comma >> expression).repeat(0) >> rparen ).as(:function_call_parameters)
     end
 
-    rule(:funcall) { (identifier >> parameters).as(:funcall) }
+    rule(:function_call) { (identifier >> function_call_parameters).as(:function_call) }
 
     rule(:number) do
       ( match['0-9'].repeat(1) >> ( str('.') >> match['0-9'].repeat(1) ).maybe ).as(:number) >> space?
@@ -51,7 +51,7 @@ module SimpleLang
 
     rule(:paren_expression) { lparen >> expression >> rparen }
 
-    rule(:value) { (control_expression | funcall | number | identifier | paren_expression).as(:value) }
+    rule(:value) { (function_literal | control_expression | function_call | number | identifier | paren_expression).as(:value) }
 
     # unary expressions
 
@@ -78,7 +78,7 @@ module SimpleLang
 
     # controls
 
-    rule(:end_statement) { (str('end') >> space?).as(:end_statement) }
+    rule(:end_statement) { str('end') >> space? }
     rule(:case_statement) { (str('case') >> space? >> expression.as(:parameter) >> linebreak).as(:case_statement) }
     rule(:when_statement) { (str('when') >> space? >> expression.as(:parameter) >> linebreak >> procedure.as(:content)).as(:when_statement) }
     rule(:else_statement) { (str('else') >> space? >> linebreak >> procedure.as(:content)).as(:else_statement) }
@@ -91,8 +91,12 @@ module SimpleLang
 
     # function literals
 
+    rule(:function_literal_parameters) do
+      (lparen >> identifier.repeat(1,1) >> (comma >> identifier).repeat(0) >> rparen ).as(:function_literal_parameters)
+    end
+
     rule(:function_literal) do
-      parameters >> str('=>') >> space? >> linebreak >> procedure >> end_statement
+      (function_literal_parameters >> str('=>') >> space? >> linebreak >> procedure.as(:content) >> end_statement).as(:function_literal)
     end
 
     root :procedure_top
