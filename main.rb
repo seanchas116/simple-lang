@@ -55,6 +55,15 @@ end
 
 print(sum(10, 0))
 
+count = 0
+
+counter = () =>
+  count = count + 1
+end
+
+print(counter())
+print(counter())
+
 EOS
 
 str_closure = <<EOS

@@ -1,4 +1,5 @@
 require 'simple-lang/error'
+require 'simple-lang/context'
 
 module SimpleLang
 
@@ -14,14 +15,10 @@ module SimpleLang
 
   end
 
-
   class Variable < Struct.new(:name)
 
     def set(context, value)
       context[name] = value
-      if Function === value
-        value.context[name] = value
-      end
       self
     end
 
@@ -149,7 +146,7 @@ module SimpleLang
         return nil
       end
 
-      context = @context.clone
+      context = @context.push
 
       @parameters.each_with_index do |item, index|
         context[item] = parameters[index]
@@ -164,7 +161,7 @@ module SimpleLang
   class FunctionLiteral < Struct.new(:parameters, :procedure)
 
     def eval(context)
-      Function.new(parameters, procedure, context.clone)
+      Function.new(parameters, procedure, context)
     end
 
   end

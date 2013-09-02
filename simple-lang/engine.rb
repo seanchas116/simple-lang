@@ -3,16 +3,15 @@ require 'pp'
 require 'simple-lang/parser'
 require 'simple-lang/ast'
 require 'simple-lang/transform'
+require 'simple-lang/context'
 
 module SimpleLang
 
   class Engine
 
     def initialize()
-      @context = Hash[]
-      @context["print"] = proc {|x| puts x.to_s}
-      @context[""]
-
+      @default_table = Hash[]
+      @default_table["print"] = proc {|x| puts x.to_s}
     end
 
     def parse(source, print_parsetree: false, print_ast: false)
@@ -34,7 +33,8 @@ module SimpleLang
     def exec(source, print_parsetree: false, print_ast: false)
       ast = parse(source, print_parsetree: print_parsetree, print_ast: print_ast)
       if ast
-        ast.eval(@context.clone)
+        context = Context.new.push(@default_table)
+        ast.eval(context)
       end
     rescue ExecError => failure
       puts failure.message
