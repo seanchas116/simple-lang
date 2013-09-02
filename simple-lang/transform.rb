@@ -14,10 +14,6 @@ module SimpleLang
       FunCall.new(identifier.to_s, parameters)
     end
 
-    rule(:funcall => { :identifier => simple(:identifier), :parameters => simple(:parameter) }) do
-      FunCall.new(identifier.to_s, [parameter])
-    end
-
     rule(:value => simple(:item)) { item }
 
     # unary expressions

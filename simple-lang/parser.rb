@@ -38,7 +38,7 @@ module SimpleLang
     # values
     
     rule(:parameters) do
-      lparen >> ( expression >> ( comma >> expression.repeat(0) ).maybe >> rparen ).as(:parameters)
+      lparen >> ( expression.repeat(1,1) >> (comma >> expression).repeat(0) >> rparen ).as(:parameters)
     end
 
     rule(:funcall) { (identifier >> parameters).as(:funcall) }
@@ -88,6 +88,12 @@ module SimpleLang
     end
 
     rule(:control_expression) { case_when_expression }
+
+    # function literals
+
+    rule(:function_literal) do
+      parameters >> str('=>') >> space? >> linebreak >> procedure >> end_statement
+    end
 
     root :procedure_top
 
