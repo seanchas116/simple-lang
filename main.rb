@@ -25,8 +25,7 @@ def eval(proceduce)
   context["floor"] = proc { |x| x.floor }
   context["hypot"] = Math.method(:hypot)
 
-  proceduce.context = context
-  proceduce.eval
+  proceduce.eval(context)
 
 end
 
@@ -39,11 +38,25 @@ x_1 = -6 + x0
 x2 = 2 * (hypot(x0, x_1) + 2)
 EOS
 
-str2 = "
-a > 1
-a > 1
-a == 2
-3 + (3 + 2) * f(2, 3) + f(1)
-"
+str_control = <<EOS
+
+x = 0
+
+case 2
+when 5
+  1
+when 2
+  1 + 3
+end
+
+case x
+when 1
+else
+  2
+end
+
+
+EOS
 
 eval(parse(str))
+eval(parse(str_control))

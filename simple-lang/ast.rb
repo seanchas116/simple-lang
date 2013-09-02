@@ -1,19 +1,23 @@
 
 module SimpleLang
 
-  class Procedure
+  class Procedure < Struct.new(:expressions)
 
-    attr_accessor :expressions, :context
+    def eval(context)
 
-    def initialize(expressions)
-      @expressions = expressions
-      @context = Hash[]
-    end
+      result = nil
 
-    def eval()
-      @expressions.each do |exp|
-        p exp.eval(@context)
+      puts "evaluating a Procedure"
+
+      expressions.each do |exp|
+        result = exp.eval(context)
+        p result
       end
+
+      puts "evaluating ends"
+
+      result
+
     end
 
   end
@@ -105,6 +109,28 @@ module SimpleLang
       when '^'
         left.eval(context) ^ right.eval(context)
       end
+    end
+
+  end
+
+  class CaseWhenExpression < Struct.new(:case_parameter, :when_statements, :else_procedure)
+
+    def eval(context)
+
+      case_value = case_parameter.eval(context)
+
+      when_statements.each do |statement|
+        if case_value == statement.parameter.eval(context)
+          return statement.procedure.eval(context)
+        end
+      end
+
+      if else_procedure
+        return else_procedure.eval(context)
+      end
+
+      return nil
+
     end
 
   end

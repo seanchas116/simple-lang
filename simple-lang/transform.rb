@@ -60,6 +60,25 @@ module SimpleLang
       Procedure.new(expressions)
     end
 
+    # controls
+  
+    rule(:when_statement => {:parameter => simple(:parameter), :content => simple(:procedure)}) do
+      Struct.new(:parameter, :procedure).new(parameter, procedure)
+    end
+
+    rule(:else_statement => {:content => simple(:procedure)}) do
+      procedure
+    end
+
+    rule(:case_when_expression => {
+        :case_statement => {:parameter => simple(:case_parameter)},
+        :whens => sequence(:when_statements),
+        :elses => sequence(:else_statements),
+        :end_statement => simple(:end_statement)
+      }) do
+      CaseWhenExpression.new(case_parameter, when_statements, else_statements[0])
+    end
+
   end
 
 end
