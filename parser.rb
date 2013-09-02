@@ -24,29 +24,39 @@ class Parser < Parslet::Parser
   rule(:lparen) { str('(') >> space? }
   rule(:rparen) { str(')') >> space? }
   rule(:comma) { str(',') >> space? }
+  rule(:unaryop) { any_str(UNARY_OPERATORS).as(:op) >> space? }
+  
+  rule(:parameters) do
+    lparen >> ( expression >> ( comma >> expression.repeat(0) ).maybe >> rparen ).as(:parameters)
+  end
 
-  rule(:unaryop) { any_str(UNARY_OPERATORS) >> space? }
- 
-  rule(:funcall) { identifier.as(:identifier) >> (lparen >> (expression.as(:expression) >> (comma >> expression.as(:expression)).repeat(0)).maybe >> rparen).as(:parameters) }
-  rule(:number) { ( match['0-9'].repeat(1) >> ( str('.') >> match['0-9'].repeat(1) ).maybe ) >> space? }
-  rule(:identifier) { match['a-zA-Z_'] >> match['a-zA-Z0-9_'].repeat(0) >> space? }
-  rule(:parenexpression) { lparen >> expression.as(:expression) >> rparen }
-  rule(:value) { funcall.as(:funcall) | number.as(:number) | identifier.as(:identifier) | parenexpression }
+  rule(:funcall) { (identifier >> parameters).as(:funcall) }
 
-  rule(:unary_subexpr) { unaryop.maybe.as(:unaryop) >> value.as(:value) }
+  rule(:number) do
+    ( match['0-9'].repeat(1) >> ( str('.') >> match['0-9'].repeat(1) ).maybe ).as(:number) >> space?
+  end
 
-  rule(:sub_expr_0) { unary_subexpr }
+  rule(:identifier) do
+    ( match['a-zA-Z_'] >> match['a-zA-Z0-9_'].repeat(0) ).as(:identifier) >> space?
+  end
+
+  rule(:paren_expression) { lparen >> expression >> rparen }
+  
+  rule(:value) { (funcall | number | identifier | paren_expression).as(:value) }
+
+  rule(:unary_expression) { (unaryop.maybe >> value).as(:unary_expression) }
+  rule(:sub_expr_0) { unary_expression }
 
   BINARY_OPERATORS_WITH_PRECEDENCE.each_with_index do |operators, index|
     rule("sub_expr_#{index+1}") do
       prev = method("sub_expr_#{index}").call
-      prev.as(:left) >> ((any_str(operators) >> space?).as(:op) >> prev.as(:right)).repeat(1) | prev
+      (prev.as(:left) >> (any_str(operators).as(:op) >> space? >> prev.as(:right)).repeat(1)).as(:binary_expression) | prev
     end
   end
 
   rule(:expression) { method("sub_expr_#{BINARY_OPERATORS_WITH_PRECEDENCE.length}").call }
 
-  rule(:procedure) { ((expression.as(:expression).maybe >> linebreak).repeat(0) >> expression.as(:expression).maybe).as(:procedure) }
+  rule(:procedure) { ((expression.maybe >> linebreak).repeat(0) >> expression.maybe).as(:procedure) }
 
   root :procedure
 
