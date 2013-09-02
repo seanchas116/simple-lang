@@ -54,8 +54,6 @@ when 1
 else
   2
 end
-
-
 EOS
 
 eval(parse(str))

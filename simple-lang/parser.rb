@@ -74,7 +74,7 @@ module SimpleLang
     rule(:expression) { method("binary_subexpr_#{BINARY_OPERATORS_WITH_PRECEDENCE.length}").call }
 
     rule(:procedure) { ((expression.maybe >> linebreak).repeat(0)).as(:procedure) }
-    rule(:procedure_top) { ((expression.maybe >> linebreak).repeat(0) >> expression.maybe).as(:procedure) }
+    rule(:procedure_top) { ((expression.maybe >> linebreak).repeat(0) >> expression.repeat(0,1)).as(:procedure) }
 
     # controls
 

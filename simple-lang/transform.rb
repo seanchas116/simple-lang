@@ -52,10 +52,6 @@ module SimpleLang
 
     # procedures
 
-    rule(:procedure => simple(:expression)) do
-      Procedure.new([expression])
-    end
-
     rule(:procedure => sequence(:expressions)) do
       Procedure.new(expressions)
     end
