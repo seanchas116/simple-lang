@@ -1,6 +1,6 @@
 $:.unshift File.dirname(__FILE__)
 
-require 'simple-lang/engine'
+require 'simple-lang'
 
 str = <<EOS
 a = 1 - 2 * 3
