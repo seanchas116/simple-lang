@@ -156,6 +156,13 @@ module SimpleLang
 
     end
 
+    def to_s
+      args = @parameters.inject do |memo, x|
+        "#{memo}, #{x}"
+      end
+      "Function(#{args})"
+    end
+
   end
 
   class FunctionLiteral < Struct.new(:parameters, :procedure)

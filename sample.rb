@@ -53,6 +53,7 @@ sum = (x, memo) =>
   end
 end
 
+print(sum)
 print(sum(10, 0))
 
 count = 0
