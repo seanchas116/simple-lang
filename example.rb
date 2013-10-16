@@ -83,6 +83,8 @@ print(counter())
 
 EOS
 
+str_empty = ""
+
 engine = SimpleLang::Engine.new
 
 engine.run str
@@ -90,4 +92,4 @@ engine.run str_control
 engine.run str_func
 engine.run str_func_rec
 engine.run str_closure, print_parsetree: true, print_ast: true
-
+engine.run str_empty
