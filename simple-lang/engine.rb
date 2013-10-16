@@ -9,9 +9,11 @@ module SimpleLang
 
   class Engine
 
+    attr_reader :builtin_vars
+
     def initialize()
-      @default_table = Hash[]
-      @default_table["print"] = proc {|x| puts x.to_s}
+      @builtin_vars = Hash[]
+      @builtin_vars["print"] = proc {|x| puts x.to_s}
     end
 
     def parse(source, print_parsetree: false, print_ast: false)
@@ -30,10 +32,10 @@ module SimpleLang
       puts failure.cause.ascii_tree
     end
 
-    def exec(source, print_parsetree: false, print_ast: false)
+    def run(source, print_parsetree: false, print_ast: false)
       ast = parse(source, print_parsetree: print_parsetree, print_ast: print_ast)
       if ast
-        context = Context.new.push(@default_table)
+        context = Context.new.push(@builtin_vars)
         ast.eval(context)
       end
     rescue ExecError => failure

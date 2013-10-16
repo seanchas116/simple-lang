@@ -85,9 +85,9 @@ EOS
 
 engine = SimpleLang::Engine.new
 
-engine.exec str
-engine.exec str_control
-engine.exec str_func
-engine.exec str_func_rec
-engine.exec str_closure, print_parsetree: true, print_ast: true
+engine.run str
+engine.run str_control
+engine.run str_func
+engine.run str_func_rec
+engine.run str_closure, print_parsetree: true, print_ast: true
 
