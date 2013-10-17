@@ -15,7 +15,7 @@ Using [Parslet](http://kschiess.github.io/parslet/) for constructing the parser.
 Examples
 ----
 
-Example 1 (Closure):
+Example (Closure):
 
     get_counter = () =>
       count = 0
@@ -29,12 +29,12 @@ Example 1 (Closure):
     print(counter())
     print(counter())
 
-Result 1:
+Result:
 
     1.0
     2.0
 
-Example 2 (Recursion):
+Example (Recursion):
 
     sum = (x, memo) =>
       case x
@@ -47,9 +47,33 @@ Example 2 (Recursion):
 
     print(sum(10, 0))
 
-Result 2:
+Result:
 
     55.0
+
+Example (Object):
+
+    Counter = () =>
+      self = Object()
+      count = 0
+      self.get_count = () =>
+        count
+      end
+      self.increment = () =>
+        count = count + 1
+      end
+      self
+    end
+
+    c = Counter()
+    print(c.get_count())
+    c.increment()
+    print(c.get_count())
+
+Result:
+
+    0.0
+    1.0
 
 License
 ----
