@@ -15,6 +15,7 @@ module SimpleLang
       @io = io
       @builtin_vars = Hash[]
       @builtin_vars["print"] = proc {|x| io.puts x.to_s}
+      @builtin_vars["Object"] = proc { Hash.new }
     end
 
     def parse(source, print_parsetree: false, print_ast: false)
@@ -33,7 +34,7 @@ module SimpleLang
 
     def run(source, print_parsetree: false, print_ast: false)
       ast = parse(source, print_parsetree: print_parsetree, print_ast: print_ast)
-      if Procedure === ast
+      if ProcedureAST === ast
         context = Context.new.push(@builtin_vars)
         ast.eval(context)
       end

@@ -7,11 +7,11 @@ module SimpleLang
 
     # values
 
-    rule(:number => simple(:x)) { NumberLiteral.new(x.to_f) }
-    rule(:identifier => simple(:name)) { Variable.new(name.to_s) }
+    rule(:number => simple(:x)) { NumberAST.new(x.to_f) }
+    rule(:identifier => simple(:name)) { VariableAST.new(name.to_s) }
 
     rule(:function_call => { :identifier => simple(:identifier), :function_call_parameters => sequence(:parameters) }) do
-      FunctionCall.new(identifier.to_s, parameters)
+      FunctionCallAST.new(identifier.to_s, parameters)
     end
 
     rule(:value => simple(:item)) { item }
@@ -23,7 +23,7 @@ module SimpleLang
     end
 
     rule(:unary_expression => { :op => simple(:op), :value => simple(:value) }) do
-      UnaryOperation.new(op.to_s, value)
+      UnaryOperationAST.new(op.to_s, value)
     end
 
     # binary expressions
@@ -37,7 +37,7 @@ module SimpleLang
     rule(:binary_expression => sequence(:seq)) do
       left = seq[0].left
       seq[1..-1].each do |item|
-        left = BinaryOperation.new(left, item.op.to_s, item.right)
+        left = BinaryOperationAST.new(left, item.op.to_s, item.right)
       end
       left
     end
@@ -49,7 +49,7 @@ module SimpleLang
     # procedures
 
     rule(:procedure => sequence(:expressions)) do
-      Procedure.new(expressions)
+      ProcedureAST.new(expressions)
     end
 
     # controls
@@ -67,11 +67,11 @@ module SimpleLang
         :whens => sequence(:when_statements),
         :elses => sequence(:else_statements)
       }) do
-      CaseWhenExpression.new(case_parameter, when_statements, else_statements[0])
+      CaseWhenExpressionAST.new(case_parameter, when_statements, else_statements[0])
     end
     
     rule(:function_literal => { :function_literal_parameters => sequence(:params), :content => simple(:procedure) }) do
-      FunctionLiteral.new(params.map {|item| item.name}, procedure)
+      FunctionLiteralAST.new(params.map {|item| item.name}, procedure)
     end
 
   end

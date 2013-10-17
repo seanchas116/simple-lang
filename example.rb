@@ -85,7 +85,40 @@ EOS
 
 str_empty = ""
 
+str_subscription = <<EOS
+a = Object()
+a.b = 1
+print(a.b)
+EOS
+
+str_object = <<EOS
+
+Counter = () =>
+  self = Object()
+  count = 0
+  self.get_count = () =>
+    count
+  end
+  self.increment = () =>
+    count = count + 1
+  end
+  self
+end
+
+ten = () =>
+  10
+end
+
+print(ten())
+c = Counter()
+print(c.get_count())
+c.increment()
+print(c.get_count())
+
+EOS
+
 engine = SimpleLang::Engine.new
+
 
 engine.run str
 engine.run str_control
@@ -93,3 +126,5 @@ engine.run str_func
 engine.run str_func_rec
 engine.run str_closure, print_parsetree: true, print_ast: true
 engine.run str_empty
+engine.run str_subscription, print_parsetree: true, print_ast: true
+engine.run str_object, print_parsetree: true, print_ast: true

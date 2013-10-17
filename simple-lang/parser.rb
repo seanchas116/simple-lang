@@ -5,6 +5,7 @@ module SimpleLang
   UNARY_OPERATORS = %w(! + -)
 
   BINARY_OPERATORS_WITH_PRECEDENCE = [
+    %w(.),
     %w(^),
     %w(* / %),
     %w(+ -),
